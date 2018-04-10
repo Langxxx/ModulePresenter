@@ -19,7 +19,7 @@ public protocol ModuleService {
 
 }
 
-extension ModuleService {
+public extension ModuleService {
     func didEnterBackground(_ application: UIApplication) {}
     func willEnterForeground(_ application: UIApplication) {}
     func didFinishLaunching(_ application: UIApplication) {}
@@ -29,3 +29,9 @@ extension ModuleService {
     func willTerminate(_ application: UIApplication) {}
 }
 
+
+public protocol Singletonbility {
+    static var shared: ModuleService { get }
+}
+
+public typealias Modulable = ModuleService & Singletonbility

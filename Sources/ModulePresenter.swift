@@ -19,24 +19,24 @@ public class ModulePresenter {
 
 
 extension ModulePresenter {
-    public func register(for module: ModuleService) {
+    public func register(for module: Modulable.Type) {
         assert(Thread.isMainThread)
-        let key = _key(for: module)
+        let key = _key(for: module.self)
         guard _storege[key] == nil else {
             fatalError("ERROR: duplicate registration: \(module)")
         }
-        _storege[key] = module
+        _storege[key] = module.shared
     }
 
-    public func unregister(for module: ModuleService) {
+    public func unregister(for module: Modulable.Type){
         assert(Thread.isMainThread)
-        let key = _key(for: module)
+        let key = _key(for: module.self)
         _storege[key] = nil
     }
 }
 
 extension ModulePresenter {
-    public func invoke<M: ModuleService>(action: (M?) -> ()) {
+    public func invoke<M>(in moduel: M.Type, action: (M?) -> ()) {
         assert(Thread.isMainThread)
         let module = _storege.first(where: { _, m in m is M })?.value as? M
         action(module)
@@ -45,7 +45,7 @@ extension ModulePresenter {
 
 
 private extension ModulePresenter {
-    func _key(for module: ModuleService) -> String {
+    func _key(for module: Modulable.Type) -> String {
         return String(describing: module)
     }
 }
